@@ -1,0 +1,1 @@
+    ls    -l  | sort ;    echo   a &&  (cat)   < b.txt    ;   
