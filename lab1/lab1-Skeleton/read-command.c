@@ -101,8 +101,19 @@ make_command_stream (int (*get_next_byte) (void *),
   char pvc; //previous character
   while((c = get_next_byte(file_stream)) != EOF){
     if(isnewop(c)){
-      pvc = c; //in case of || and &&
-      opflag = true;
+      command_t cmd_a = make_simple_command(buffer);
+      cmd_list_push(cmd_list, cmd_a);
+      if(opflag){
+        opflag = false;
+        switch(pvc){
+
+        }
+      }
+      else{
+        pvc = c; //in case of || and &&
+        opflag = true;
+        continue;
+      }
     }   
     if(b >= chunk){
       chunk *= 2;
@@ -111,16 +122,21 @@ make_command_stream (int (*get_next_byte) (void *),
     buffer[b++] = c;
   }
   //printf("buffer = %s, size=%d\n", buffer, b);
-  command_t cmd_a= make_simple_command(buffer);
+  command_t cmd_a = make_simple_command(buffer);
   
 
-  //printf("%s\n", cmd_a->u.word[0]);
+  /*cmd_list_t cmd_list = cmd_list_new();
+  cmd_list_push(cmd_list, cmd_a);
+  printf("%s\n", cmd_list_peek(cmd_list)->u.word[0]);
+  
+  str_list_t op_list = str_list_new();
+  str_list_push(op_list, "&&");
+  STRING str = str_list_pop(op_list);
+  printf("%d\n", str_list_size(op_list) );
 
-  cmd_list_t * cmd_list = (cmd_list_t*)list_new(COMMAND_LIST);
-  //list_t * op_list = list_new();
 
-  list_free(cmd_list);
-  //list_free(op_list);
+  cmd_list_free(cmd_list);
+  str_list_free(op_list);*/
 
   return 0;
 }
