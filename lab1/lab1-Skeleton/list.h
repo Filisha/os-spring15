@@ -2,6 +2,7 @@
 #define _LIST_H_
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include "command.h"
 
 /*************
@@ -9,7 +10,7 @@ command list
 **************/
 
 typedef struct cmd_node {
-    command_t value;
+    command_t cmd;
     struct cmd_node * next;
 } * cmd_node_t;
 
@@ -31,7 +32,7 @@ cmd_list_t cmd_list_new(){
 void cmd_list_push(cmd_list_t list, command_t cmd){
 	cmd_node_t tmp_node =  (cmd_node_t)malloc(sizeof(cmd_node_t));
 	tmp_node->next = NULL;
-	tmp_node->value = cmd;
+	tmp_node->cmd = cmd;
 	if(list->size == 0)
 		list->head = list->tail = list->cursor = tmp_node;
 	else{
@@ -42,7 +43,7 @@ void cmd_list_push(cmd_list_t list, command_t cmd){
 }
 
 command_t cmd_list_peek(cmd_list_t list){
-	return list->tail->value;
+	return list->tail->cmd;
 }
 
 int cmd_list_size(cmd_list_t list){
@@ -54,7 +55,7 @@ command_t cmd_list_pop(cmd_list_t list){
 	if(list->size == 0)
 		return NULL;
 
-	command_t value = list->tail->value;
+	command_t cmd = list->tail->cmd;
 	list->cursor = list->head;
 
 	while(list->cursor->next != list->tail && list->cursor->next != NULL){
@@ -64,7 +65,11 @@ command_t cmd_list_pop(cmd_list_t list){
 	free(list->tail->next);
 	list->tail->next = NULL;
 	list->size -= 1;
-	return value;
+	return cmd;
+}
+
+bool cmd_list_isempty(cmd_list_t list){
+	return list->size == 0;
 }
 
 void cmd_list_free(cmd_list_t list){

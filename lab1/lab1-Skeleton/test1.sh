@@ -1,1 +1,1 @@
-  echo a  ; ls -lt
+  echo a ; ls -lt | echo b
